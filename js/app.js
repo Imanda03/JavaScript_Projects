@@ -1,4 +1,4 @@
-console.log('Welcome to note apps');
+// console.log('Welcome to note apps');
 showNotes();
 // If user add note, add to it local storage
 
@@ -48,7 +48,7 @@ function showNotes() {
 
 // fuction to delete the node
 function deleteNotes(index) {
-    console.group("i am delecting.", index);
+    // console.log("i am delecting.", index);
     let notes = localStorage.getItem("notes");
     if (notes == null) {
         notesObj = [];
@@ -59,3 +59,20 @@ function deleteNotes(index) {
     localStorage.setItem("notes", JSON.stringify(notesObj));
     showNotes();
 }
+
+let searchTxt = document.getElementById('searchTxt');
+searchTxt.addEventListener('input',function(){
+
+    let inputVal = searchTxt.value.toLowerCase();
+    // console.log('Input event fired',inputVal);
+    let noteCards = document.getElementsByClassName('noteCard');
+    Array.from(noteCards).forEach(function(element){
+        let cardTxt = element.getElementsByTagName('p')[0].innerText;
+        if(cardTxt.includes(inputVal)){
+            element.style.display = 'block';
+        }else{
+            element.style.display = 'none';
+        }
+        // console.log(cardTxt);
+    })
+})
