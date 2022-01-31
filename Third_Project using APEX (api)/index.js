@@ -1,31 +1,48 @@
 console.log('Third Project');
 
-//50a634d0807645cc83fb4aebdb4a6a12
-
+//Initilize the the news api parameters
+let apiKey = '50a634d0807645cc83fb4aebdb4a6a12';
+let sources = 'bbc-news';
 
 //Grab the news container
 let newsAccordion = document.getElementById('newsAccordion');
 
 
-//Create the get request
+//Create an ajex get request
 const xhr = new XMLHttpRequest();
-xhr.open('POST', 'https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=50a634d0807645cc83fb4aebdb4a6a12', true);
-xhr.getResponseHeader('Content-type', 'application/json');
+xhr.open('GET', `https://newsapi.org/v2/top-headlines?sources=${sources}&apiKey=${apiKey}`, true);
 
-let news = ` <div class="card">
-<div class="card-header" id="headingOne">
-    <h2 class="mb-0">
-        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
-            data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Collapsible Group Item #1
-        </button>
-    </h2>
-</div>
+// What to do when response is ready
+xhr.onload = function () {
+    if (this.status === 200) {
 
-<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-    <div class="card-body">
-        Some placeholder content for the first accordion panel. This panel is shown by default, thanks to
-        the <code>.show</code> class.
-    </div>
-</div>
-</div>`
+        let json = JSON.parse(this.responseText);
+        let articles = json.articles;
+        // console.log(articles);
+        let newsHtml = "";
+        articles.forEach(function(elemnet, index) {
+
+            let news = ` <div class="card">
+            <div class="card-header" id="heading${index}">
+                <h2 class="mb-0">
+                    <button class="btn btn-link  collasped" type="button" data-toggle="collapse"
+                        data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}">
+                        ${elemnet['title']}
+                    </button>
+                </h2>
+            </div>
+            
+            <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#newsAccordion">
+            <div class="card-body"> ${elemnet['content']}. <a href=${elemnet['url']} target="_blank">read more here.</a></div>
+            </div>
+            </div>`
+            newsHtml += news;
+        });
+        newsAccordion.innerHTML = newsHtml;
+    }
+    else {
+        console.log("Some error occured");  
+    }
+}
+xhr.send();
+
